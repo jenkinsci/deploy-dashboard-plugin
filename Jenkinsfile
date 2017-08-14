@@ -9,7 +9,9 @@ node {
         }
 
         stage('Deploy to S3') {
-            s3Upload(file: 'target/environment-dashboard.hpi', bucket: 'distributions.devops.namecheap.net', path: 'jenkins/plugins/environment-dashboard.hpi')
+            withAWS(credentials: 'd2c69951-4499-48a4-8a76-f708f8d8591f') {
+                s3Upload(file: 'target/environment-dashboard.hpi', bucket: 'distributions.devops.namecheap.net', path: 'jenkins/plugins/environment-dashboard.hpi')
+            }
             archiveArtifacts artifacts: 'target/environment-dashboard.hpi'
         }
 
