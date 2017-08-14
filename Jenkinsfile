@@ -7,6 +7,7 @@ node {
 
                 stage('Build') {
                     sh 'mvn package'
+                    archiveArtifacts artifacts: 'target/environment-dashboard.hpi'
                 }
                 if (env.BRANCH_NAME == 'master') {
                     stage('Deploy to S3') {
@@ -17,7 +18,6 @@ node {
                                     path: 'jenkins/plugins/environment-dashboard.hpi'
                             )
                         }
-                        archiveArtifacts artifacts: 'target/environment-dashboard.hpi'
                     }
                 }
             }
