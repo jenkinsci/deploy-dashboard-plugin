@@ -13,7 +13,7 @@ node('master') {
             }
             if (env.BRANCH_NAME == 'master') {
                 stage('Deploy to S3') {
-                    withAWS(credentials: '1c60c387-a550-407f-bd34-1ec0f6da1a4c') {
+                    withAWS() {
                         s3Upload(
                                 file: 'target/environment-dashboard.hpi',
                                 bucket: 'distributions.devops.namecheap.net',
