@@ -25,6 +25,8 @@ node('master') {
         }
         currentBuild.result = 'SUCCESS'
     } catch(e) {
+        echo "Caught: ${e}"
+
         currentBuild.result = 'FAILED'
     } finally {
         step([$class: 'StashNotifier'])
