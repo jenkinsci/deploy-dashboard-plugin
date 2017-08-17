@@ -110,7 +110,7 @@ environmentDashboard(addColumns: true, buildJob: '', buildNumber: 'Version-1', c
 
 ## AddAction
 Add action to build sidebar.
-![Sidebar](http://take.ms/CmtKo)
+![Sidebar](img/add_action.png)
 
 ```groovy
 node {
