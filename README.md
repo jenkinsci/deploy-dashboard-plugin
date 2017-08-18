@@ -106,3 +106,17 @@ environmentDashboard(addColumns: true, buildJob: '', buildNumber: 'Version-1', c
 }
 
 ```
+
+
+## AddAction
+Add action to build sidebar.
+![Sidebar](img/add_action.png)
+
+```groovy
+node {
+    stage("Build") {
+        step([$class: 'org.jenkinsci.plugins.environmentdashboard.AddAction', title: 'Deploy', url: "/template/${env.BUILD_ID}"])
+        step([$class: 'org.jenkinsci.plugins.environmentdashboard.AddAction', title: 'Yeah!', url: "/yeah/${env.BUILD_ID}"])
+    }
+}
+```
