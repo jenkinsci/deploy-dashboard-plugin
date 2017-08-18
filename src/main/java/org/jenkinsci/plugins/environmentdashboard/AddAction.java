@@ -29,21 +29,16 @@ public class AddAction extends Recorder implements SimpleBuildStep, Serializable
 
     @Override
     public void perform(@Nonnull Run<?, ?> run, @Nonnull FilePath workspace, @Nonnull Launcher launcher, @Nonnull TaskListener listener) throws InterruptedException, IOException {
-        run.addAction(
-                new UrlAction(
-                        title,
-                        run.getEnvironment(listener).expand(url)
-                )
-        );
+        run.addAction(new UrlAction(title, run.getEnvironment(listener).expand(url)));
     }
 
     public class UrlAction implements Action {
         final private String title;
-        final private String template;
+        final private String url;
 
-        public UrlAction(String title, String template) {
+        public UrlAction(String title, String url) {
             this.title = title;
-            this.template = template;
+            this.url = url;
         }
 
         @Override
@@ -58,7 +53,7 @@ public class AddAction extends Recorder implements SimpleBuildStep, Serializable
 
         @Override
         public String getUrlName() {
-            return template;
+            return url;
         }
     }
 }
