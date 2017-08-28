@@ -1,26 +1,89 @@
-@-webkit-keyframes deploying {
-  from { background-color: #3498db; }
-  to { background-color: inherit; }
-}
-@-moz-keyframes deploying {
-  from { background-color: #3498db; }
-  to { background-color: inherit; }
-}
-@-o-keyframes deploying {
-  from { background-color: #3498db; }
-  to { background-color: inherit; }
-}
-@keyframes deploying {
-  from { background-color: #3498db; }
-  to { background-color: inherit; }
-}
-.deploying {
-  -webkit-animation: deploying 2s infinite; /* Safari 4+ */
-  -moz-animation:    deploying 2s infinite; /* Fx 5+ */
-  -o-animation:      deploying 2s infinite; /* Opera 12+ */
-  animation:         deploying 2s infinite; /* IE 10+ */
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0); /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+    z-index: 999;
 }
 
-#side-panel { display: none; }
+/* Modal Content */
+.modal-content {
+    position: relative;
+    background-color: #fefefe;
+    margin: auto;
+    padding: 0;
+    border: 1px solid #888;
+    width: 80%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    -webkit-animation-name: animatetop;
+    -webkit-animation-duration: 0.4s;
+    animation-name: animatetop;
+    animation-duration: 0.4s
+}
 
-#main-panel { margin-left: 0px; }
+/* Add Animation */
+@-webkit-keyframes animatetop {
+    from {
+        top: -300px;
+        opacity: 0
+    }
+    to {
+        top: 0;
+        opacity: 1
+    }
+}
+
+@keyframes animatetop {
+    from {
+        top: -300px;
+        opacity: 0
+    }
+    to {
+        top: 0;
+        opacity: 1
+    }
+}
+
+/* The Close Button */
+.close {
+    color: white;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:before {
+    content: 'x';
+}
+
+.close:hover,
+.close:focus {
+    color: #727272;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-header {
+    padding: 2px 16px;
+    background-color: #000000;
+    color: white;
+}
+
+.modal-body {
+    padding: 1em;
+}
+
+.modal-body tbody td:first-child {
+    padding: 1em;
+}
+
+.modal-body tbody tr:first-child th:first-child {
+    padding: .7em !important;
+}

@@ -1,0 +1,176 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
+         xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt">
+
+    <link href="${rootURL}/plugin/environment-dashboard/css/blink.css" type="text/css" rel="stylesheet"/>
+
+    <j:set var="views" value="${it.owner.views}"/>
+    <j:set var="currentView" value="${it}"/>
+    <j:choose>
+        <j:when test="${empty(it.items)}">
+            <j:if test="${!empty(app.items)}">
+                <st:include page="viewTabs.jelly" it="${it.owner.viewsTabBar}"/>
+            </j:if>
+            <st:include page="noJob.jelly"/>
+        </j:when>
+        <j:otherwise>
+            <st:include page="viewTabs.jelly" it="${it.owner.viewsTabBar}"/>
+            <div class="pane-frame">
+                <table id="projectstatus" class="pane bigtable stripped-odd">
+                    <tbody>
+                        <tr class="header">
+                            <th>
+                                <span style="margin-left: 1em">
+                                    Job
+                                </span>
+                            </th>
+                            <th>
+                                <span>
+                                    Environment
+                                </span>
+                            </th>
+                            <th>
+                                <span>
+                                    Release
+                                </span>
+                            </th>
+                            <th>
+                                <span>
+                                    Result
+                                </span>
+                            </th>
+                            <th>
+                                <span>
+                                    Completed
+                                </span>
+                            </th>
+                        </tr>
+                        <j:forEach var="job" indexVar="i" items="${it.items}">
+                            <j:set var="deployments" value="${it.getEnvironments(job)}"/>
+
+                            <j:if test="${empty(deployments)}">
+                                <tr id="job_build">
+                                    <td>
+                                        <a href="${job.getAbsoluteUrl()}" style="margin-left: .5em">${job.name}</a>
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </j:if>
+
+                            <j:forEach var="deployment" indexVar="j" items="${deployments}">
+                                <tr id="job_build">
+                                    <td>
+                                        <j:if test="${j == 0}">
+                                            <a href="${job.getAbsoluteUrl()}" style="margin-left: .5em">${job.name}</a>
+                                        </j:if>
+                                    </td>
+                                    <td>
+                                        <a href="javascript:toggle('${i}_${j}');">
+                                            ${deployment.key}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="${deployment.value.run.getAbsoluteUrl()}">
+                                            ${deployment.value.buildNumber}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <l:icon alt="${deployment.value.run.description}"
+                                                class="${deployment.value.run.buildStatusIconClassName} icon-lg"/>
+                                    </td>
+                                    <td>
+                                        ${deployment.value.run.timestampString}
+                                    </td>
+                                </tr>
+                            </j:forEach>
+                        </j:forEach>
+                    </tbody>
+                </table>
+            </div>
+
+            <j:forEach var="job" indexVar="i" items="${it.items}">
+                <j:set var="environments" value="${it.getEnvironments(job)}"/>
+                <j:forEach var="env" indexVar="j" items="${environments}">
+                    <j:set var="deployments" value="${it.getDeployments(env.key, job)}"/>
+                    <div id="popup_${i}_${j}" class="modal">
+                        <!-- Modal content -->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <span class="close"></span>
+                                <h2>${job.name} | ${env.key}</h2>
+                            </div>
+                            <div class="modal-body">
+                                <div class="pane-frame">
+                                    <table id="projectstatus" class="pane bigtable stripped-odd">
+                                        <tbody>
+                                            <tr class="header">
+                                                <th>
+                                                    <span>
+                                                        Release
+                                                    </span>
+                                                </th>
+                                                <th>
+                                                    <span>
+                                                        Result
+                                                    </span>
+                                                </th>
+                                                <th>
+                                                    <span>
+                                                        Completed
+                                                    </span>
+                                                </th>
+                                            </tr>
+                                            <j:forEach var="deployment" items="${deployments}">
+                                                <tr id="job_build">
+                                                    <td>
+                                                        <a href="${deployment.run.getAbsoluteUrl()}">
+                                                            ${deployment.buildNumber}
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        <l:icon alt="${deployment.run.description}"
+                                                                class="${deployment.run.buildStatusIconClassName} icon-lg"/>
+                                                    </td>
+                                                    <td>
+                                                        ${deployment.run.timestampString}
+                                                    </td>
+                                                </tr>
+                                            </j:forEach>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </j:forEach>
+            </j:forEach>
+
+
+            <script language="javascript">
+                function toggle(id) {
+                    var modal = document.getElementById('popup_' + id);
+                    var span = modal.querySelector('.close');
+                    modal.style.display = 'block';
+
+                    function close() {
+                        modal.style.display = 'none';
+                        span.removeEventListener('click', close);
+                        window.removeEventListener('click', windowClose);
+                    }
+
+                    function windowClose(event) {
+                        if (event.target === modal) {
+                            close()
+                        }
+                    }
+
+                    window.addEventListener('click', windowClose);
+                    span.addEventListener('click', close);
+                }
+            </script>
+        </j:otherwise>
+    </j:choose>
+</j:jelly>
