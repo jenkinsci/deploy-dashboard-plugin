@@ -23,14 +23,6 @@ public class BuildAddUrl extends Builder implements SimpleBuildStep {
         this.title = title;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
     @Override
     public BuildStepMonitor getRequiredMonitorService() {
         return BuildStepMonitor.NONE;
