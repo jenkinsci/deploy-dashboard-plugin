@@ -47,9 +47,10 @@ public class Deployment extends Builder implements SimpleBuildStep {
     }
 
     @Extension
-    @Symbol("deployment")
+    @Symbol("addDeployToDashboard")
     public static class DescriptorImpl extends BuildStepDescriptor<Builder> {
         @Override
+        @Nonnull
         public String getDisplayName() {
             return "Deployment";
         }

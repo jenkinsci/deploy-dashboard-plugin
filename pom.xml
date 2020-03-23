@@ -2,60 +2,40 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.jenkins-ci.plugins</groupId>
-    <artifactId>environment-dashboard</artifactId>
-    <version>1.1.8-SNAPSHOT</version>
+    <groupId>io.jenkins.plugins</groupId>
+    <artifactId>deploy-dashboard</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
     <packaging>hpi</packaging>
-    <name>Environment Dashboard Plugin</name>
-    <url>https://wiki.jenkins-ci.org/display/JENKINS/Environment+dashboard+plugin</url>
+
+    <name>Deploy Dashboard Plugin by Namecheap</name>
+    <description>
+        Jenkins view dashboard that shows the information about which releases deployed to which environment.
+    </description>
+    <url>https://github.com/jenkinsci/deploy-dashboard-plugin</url>
 
     <properties>
-        <jenkins.version>2.7.3</jenkins.version>
+        <java.level>8</java.level>
         <findbugs.skip>true</findbugs.skip>
     </properties>
 
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>2.11</version>
+        <version>3.57</version>
     </parent>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.jenkins-ci.plugins</groupId>
-            <artifactId>jquery</artifactId>
-            <version>1.7.2-1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jenkins-ci.plugins</groupId>
-            <artifactId>job-dsl</artifactId>
-            <version>1.39</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jenkins-ci.plugins</groupId>
-            <artifactId>structs</artifactId>
-            <version>1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jenkins-ci</groupId>
-            <artifactId>symbol-annotation</artifactId>
-            <version>1.6</version>
-            <type>jar</type>
-        </dependency>
-    </dependencies>
 
     <licenses>
         <license>
-            <name>MIT License</name>
-            <url>http://opensource.org/licenses/MIT</url>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
         </license>
     </licenses>
 
     <scm>
-        <connection>scm:git:ssh://git@git.namecheap.net/nclibs/jenkins-env-dashboard-plugin.git</connection>
-        <developerConnection>scm:git:ssh://git@git.namecheap.net/nclibs/jenkins-env-dashboard-plugin.git</developerConnection>
-        <url>scm:git:ssh://git@git.namecheap.net/nclibs/jenkins-env-dashboard-plugin.git</url>
-        <tag>HEAD</tag>
+        <connection>scm:git:ssh://github.com/jenkinsci/deploy-dashboard-plugin.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/jenkinsci/deploy-dashboard-plugin.git</developerConnection>
+        <url>https://github.com/jenkinsci/deploy-dashboard-plugin</url>
     </scm>
 
     <developers>
@@ -64,47 +44,31 @@
             <name>Vladimir Doba</name>
             <email>vladimir.doba@namecheap.com</email>
         </developer>
+        <developer>
+            <id>vetal2409</id>
+            <name>Vitalii Sydorenko</name>
+            <email>vitaliy.sidorenko@namecheap.com</email>
+        </developer>
     </developers>
 
     <repositories>
         <repository>
             <id>repo.jenkins-ci.org</id>
-            <url>http://repo.jenkins-ci.org/public/</url>
+            <url>https://repo.jenkins-ci.org/public/</url>
         </repository>
     </repositories>
 
     <pluginRepositories>
         <pluginRepository>
             <id>repo.jenkins-ci.org</id>
-            <url>http://repo.jenkins-ci.org/public/</url>
+            <url>https://repo.jenkins-ci.org/public/</url>
         </pluginRepository>
     </pluginRepositories>
 
     <distributionManagement>
         <repository>
             <id>repo.jenkins-ci.org</id>
-            <url>http://repo.jenkins-ci.org/releases</url>
+            <url>https://repo.jenkins-ci.org/releases</url>
         </repository>
     </distributionManagement>
-
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>2.4.1</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.maven.scm</groupId>
-                        <artifactId>maven-scm-api</artifactId>
-                        <version>1.9</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.apache.maven.scm</groupId>
-                        <artifactId>maven-scm-provider-gitexe</artifactId>
-                        <version>1.9</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-        </plugins>
-    </build>
 </project>

@@ -9,6 +9,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -65,6 +66,7 @@ public class DeploymentView extends ListView {
         }
 
         @Override
+        @Nonnull
         public String getDisplayName() {
             return "Deployment View";
         }

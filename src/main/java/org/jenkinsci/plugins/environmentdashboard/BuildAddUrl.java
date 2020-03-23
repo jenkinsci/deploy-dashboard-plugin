@@ -23,6 +23,14 @@ public class BuildAddUrl extends Builder implements SimpleBuildStep {
         this.title = title;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
     @Override
     public BuildStepMonitor getRequiredMonitorService() {
         return BuildStepMonitor.NONE;
@@ -42,8 +50,9 @@ public class BuildAddUrl extends Builder implements SimpleBuildStep {
     @Symbol("buildAddUrl")
     public static class DescriptorImpl extends BuildStepDescriptor<Builder> {
         @Override
+        @Nonnull
         public String getDisplayName() {
-            return "";
+            return "Build Add Url";
         }
 
         @Override
@@ -53,8 +62,8 @@ public class BuildAddUrl extends Builder implements SimpleBuildStep {
     }
 
     public class BuildUrlAction implements Action {
-        final private String title;
-        final private String url;
+        private final String title;
+        private final String url;
 
         BuildUrlAction(String title, String url) {
             this.title = title;
@@ -63,7 +72,7 @@ public class BuildAddUrl extends Builder implements SimpleBuildStep {
 
         @Override
         public String getIconFileName() {
-            return "/plugin/environment-dashboard/deploy.png";
+            return String.format("/plugin/%s/deploy.png", getClass().getPackage().getImplementationTitle());
         }
 
         @Override

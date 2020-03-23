@@ -1,5 +1,6 @@
 # Contribution
 
+* [Beginners Guide to Contributing](https://wiki.jenkins.io/display/JENKINS/Beginners+Guide+to+Contributing)
 * [Jenkins Plugin Development Guild](https://wiki.jenkins.io/display/JENKINS/Plugin+tutorial#Plugintutorial-DistributingaPlugin)
 * [Original Repository](https://github.com/vipinsthename/environment-dashboard)
 * [Based on Pull Request](https://github.com/vipinsthename/environment-dashboard/pull/135)
@@ -8,8 +9,7 @@
 
 ### Requirements
 
-* JDK 6.0 or later
-* [Apache Maven 3](https://maven.apache.org/)
+* JDK 8.0 or later
 
 ### Development
 
@@ -19,12 +19,12 @@
 
 ```bash
 export MAVEN_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,address=8000,suspend=n"
-$ mvn hpi:run
+$ ./mvnw hpi:run
 ```
 
 ### Build
 
 ```bash
-$ mvn package
+$ ./mvnw package
 # This should create target/*.hpi file. Other users can use Jenkins' web UI to upload this plugin to Jenkins (or place it in $JENKINS_HOME/plugins.)
 ```
