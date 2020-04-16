@@ -61,7 +61,7 @@ public class BuildAddUrl extends Builder implements SimpleBuildStep {
         }
     }
 
-    public class BuildUrlAction implements Action {
+    public static class BuildUrlAction implements Action {
         private final String title;
         private final String url;
 
