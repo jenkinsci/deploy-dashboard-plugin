@@ -1,0 +1,9 @@
+node() {
+    stage('Release') {
+        withCredentials([usernamePassword(credentialsId: "user-nc-jenkins.io", usernameVariable: 'RELEASE_USERNAME', passwordVariable: 'RELEASE_PASSWORD')]) {
+            sshagent(["ssh-nc-github"]) {
+                sh "./mvnw --settings release-settings.xml -Drepo.login=${env.RELEASE_USERNAME} -Drepo.pwd=${env.RELEASE_PASSWORD} release:prepare release:perform"
+            }
+        }
+    }
+}
