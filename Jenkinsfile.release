@@ -1,4 +1,9 @@
 node() {
+    stage('Checkout') {
+        deleteDir()
+        checkout scm
+    }
+
     stage('Release') {
         withCredentials([usernamePassword(credentialsId: "user-nc-jenkins.io", usernameVariable: 'RELEASE_USERNAME', passwordVariable: 'RELEASE_PASSWORD')]) {
             sshagent(["ssh-nc-github"]) {
