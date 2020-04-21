@@ -40,14 +40,19 @@
 
     <developers>
         <developer>
-            <id>vladimir.doba</id>
-            <name>Vladimir Doba</name>
-            <email>vladimir.doba@namecheap.com</email>
-        </developer>
-        <developer>
             <id>vetal2409</id>
             <name>Vitalii Sydorenko</name>
             <email>vitaliy.sidorenko@namecheap.com</email>
+        </developer>
+        <developer>
+            <id>StyleT</id>
+            <name>Vlad Fedosov</name>
+            <email>vladlen.f@namecheap.com</email>
+        </developer>
+        <developer>
+            <id>vetal2409</id>
+            <name>Yuriy Puchkov</name>
+            <email>yuriy.puchkov@namecheap.com</email>
         </developer>
     </developers>
 
