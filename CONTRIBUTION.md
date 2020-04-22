@@ -5,6 +5,10 @@
 * [Original Repository](https://github.com/vipinsthename/environment-dashboard)
 * [Based on Pull Request](https://github.com/vipinsthename/environment-dashboard/pull/135)
 
+## Release
+
+Official documentation: [Performing a Plugin Release](https://jenkins.io/doc/developer/publishing/releasing/)
+
 ## Development
 
 ### Requirements
