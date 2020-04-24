@@ -46,9 +46,9 @@
                             </th>
                         </tr>
                         <j:forEach var="job" indexVar="i" items="${it.items}">
-                            <j:set var="deployments" value="${it.getEnvironments(job)}"/>
+                            <j:set var="environments" value="${it.getEnvironments(job)}"/>
 
-                            <j:if test="${empty(deployments)}">
+                            <j:if test="${empty(environments)}">
                                 <tr id="job_build">
                                     <td>
                                         <a href="${job.getAbsoluteUrl()}" style="margin-left: .5em">${job.name}</a>
@@ -60,7 +60,7 @@
                                 </tr>
                             </j:if>
 
-                            <j:forEach var="deployment" indexVar="j" items="${deployments}">
+                            <j:forEach var="environment" indexVar="j" items="${environments}">
                                 <tr id="job_build">
                                     <td>
                                         <j:if test="${j == 0}">
@@ -69,20 +69,20 @@
                                     </td>
                                     <td>
                                         <a href="javascript:toggle('${i}_${j}');">
-                                            ${deployment.key}
+                                            ${environment.key}
                                         </a>
                                     </td>
                                     <td>
-                                        <a href="${deployment.value.run.getAbsoluteUrl()}">
-                                            ${deployment.value.buildNumber}
+                                        <a href="${environment.value.run.getAbsoluteUrl()}">
+                                            ${environment.value.buildNumber}
                                         </a>
                                     </td>
                                     <td>
-                                        <l:icon alt="${deployment.value.run.description}"
-                                                class="${deployment.value.run.buildStatusIconClassName} icon-lg"/>
+                                        <l:icon alt="${environment.value.run.description}"
+                                                class="${environment.value.run.buildStatusIconClassName} icon-lg"/>
                                     </td>
                                     <td>
-                                        ${deployment.value.run.timestampString}
+                                        ${environment.value.run.timestampString}
                                     </td>
                                 </tr>
                             </j:forEach>

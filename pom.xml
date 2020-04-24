@@ -23,6 +23,19 @@
         <version>3.57</version>
     </parent>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins.workflow</groupId>
+            <artifactId>workflow-multibranch</artifactId>
+            <version>2.21</version>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.jenkins-ci.plugins.workflow</groupId>-->
+<!--            <artifactId>workflow-job</artifactId>-->
+<!--            <version>2.38</version>-->
+<!--        </dependency>-->
+    </dependencies>
+
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
