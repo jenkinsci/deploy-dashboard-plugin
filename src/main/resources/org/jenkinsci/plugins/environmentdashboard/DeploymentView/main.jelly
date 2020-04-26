@@ -15,6 +15,7 @@
         </j:when>
         <j:otherwise>
             <st:include page="viewTabs.jelly" it="${it.owner.viewsTabBar}"/>
+            <j:set var="units" value="${it.getUnits(it.items)}"/>
             <div class="pane-frame">
                 <table id="projectstatus" class="pane bigtable stripped-odd">
                     <tbody>
@@ -45,44 +46,30 @@
                                 </span>
                             </th>
                         </tr>
-                        <j:forEach var="job" indexVar="i" items="${it.items}">
-                            <j:set var="environments" value="${it.getEnvironments(job)}"/>
-
-                            <j:if test="${empty(environments)}">
-                                <tr id="job_build">
-                                    <td>
-                                        <a href="${job.getAbsoluteUrl()}" style="margin-left: .5em">${job.name}</a>
-                                    </td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                            </j:if>
-
-                            <j:forEach var="environment" indexVar="j" items="${environments}">
+                        <j:forEach var="unit" indexVar="i" items="${units}">
+                            <j:forEach var="environment" indexVar="j" items="${unit.getEnvironments()}">
                                 <tr id="job_build">
                                     <td>
                                         <j:if test="${j == 0}">
-                                            <a href="${job.getAbsoluteUrl()}" style="margin-left: .5em">${job.name}</a>
+                                            <a href="${unit.getJob().getAbsoluteUrl()}" style="margin-left: .5em">${unit.getJob().name}</a>
                                         </j:if>
                                     </td>
                                     <td>
                                         <a href="javascript:toggle('${i}_${j}');">
-                                            ${environment.key}
+                                            ${environment.getName()}
                                         </a>
                                     </td>
                                     <td>
-                                        <a href="${environment.value.run.getAbsoluteUrl()}">
-                                            ${environment.value.buildNumber}
+                                        <a href="${environment.getCurrentAction().run.getAbsoluteUrl()}">
+                                            ${environment.getCurrentAction().buildNumber}
                                         </a>
                                     </td>
                                     <td>
-                                        <l:icon alt="${environment.value.run.description}"
-                                                class="${environment.value.run.buildStatusIconClassName} icon-lg"/>
+                                        <l:icon alt="${environment.getCurrentAction().run.description}"
+                                                class="${environment.getCurrentAction().run.buildStatusIconClassName} icon-lg"/>
                                     </td>
                                     <td>
-                                        ${environment.value.run.timestampString}
+                                        ${environment.getCurrentAction().run.timestampString}
                                     </td>
                                 </tr>
                             </j:forEach>
@@ -91,16 +78,14 @@
                 </table>
             </div>
 
-            <j:forEach var="job" indexVar="i" items="${it.items}">
-                <j:set var="environments" value="${it.getEnvironments(job)}"/>
-                <j:forEach var="env" indexVar="j" items="${environments}">
-                    <j:set var="deployments" value="${it.getDeployments(env.key, job)}"/>
+            <j:forEach var="unit" indexVar="i" items="${units}">
+                <j:forEach var="environment" indexVar="j" items="${unit.getEnvironments()}">
                     <div id="popup_${i}_${j}" class="modal">
                         <!-- Modal content -->
                         <div class="modal-content">
                             <div class="modal-header">
                                 <span class="close"></span>
-                                <h2>${job.name} | ${env.key}</h2>
+                                <h2>${unit.getJob().name} | ${environment.getName()}</h2>
                             </div>
                             <div class="modal-body">
                                 <div class="pane-frame">
@@ -123,7 +108,7 @@
                                                     </span>
                                                 </th>
                                             </tr>
-                                            <j:forEach var="deployment" items="${deployments}">
+                                            <j:forEach var="deployment" items="${environment.getActions()}">
                                                 <tr id="job_build">
                                                     <td>
                                                         <a href="${deployment.run.getAbsoluteUrl()}">

@@ -2,9 +2,13 @@ package org.jenkinsci.plugins.environmentdashboard;
 
 import hudson.Extension;
 import hudson.Util;
-import hudson.model.*;
+import hudson.model.Job;
+import hudson.model.ListView;
+import hudson.model.TopLevelItem;
+import hudson.model.ViewDescriptor;
 import hudson.util.FormValidation;
 import net.sf.json.JSONObject;
+import org.jenkinsci.plugins.environmentdashboard.Deployment.DeploymentAction;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;
 import org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject;
@@ -13,7 +17,10 @@ import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
@@ -24,61 +31,52 @@ public class DeploymentView extends ListView {
         super(name);
     }
 
-    public Map<String, Deployment.DeploymentAction> getEnvironments(TopLevelItem item) {
-        //org.jenkinsci.plugins.workflow.job.WorkflowJob
-        //org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject
-        System.out.println("Item class: " + item.getClass().toString());
+    public static class Unit {
+        private final TopLevelItem job;
+        private final List<Environment> environments;
 
-        List<WorkflowRun> runs = Collections.emptyList();
-        if (item instanceof WorkflowMultiBranchProject) {
-            runs = ((WorkflowMultiBranchProject) item)
-                    .getItems()
-                    .stream()
-                    .peek(job -> System.out.println(": " + job.getDisplayName()))
-                    .map(Job::getBuilds)
-                    .flatMap(Collection::stream)
-                    .collect(Collectors.toList());
-        } else if (item instanceof WorkflowJob) {
-            runs = ((WorkflowJob) item).getBuilds();
+        public TopLevelItem getJob() {
+            return job;
         }
 
-
-
-//        if (!(item instanceof Job)) {
-//            return new TreeMap<>();
-//        }
-
-        if (!(item instanceof Job) && !(item instanceof WorkflowMultiBranchProject)) {
-            return new TreeMap<>();
+        public List<Environment> getEnvironments() {
+            return environments;
         }
 
+        public Unit(TopLevelItem job, List<Environment> environments) {
+            this.job = job;
+            this.environments = environments;
+        }
 
-//        List<Run> runs = ((Job) item).getBuilds();
-        Map<String, Deployment.DeploymentAction> envs = new TreeMap<>();
-        for (Run run : runs) {
-            Deployment.DeploymentAction deployment = run.getAction(Deployment.DeploymentAction.class);
+        public static class Environment {
+            private final String name;
+            private final List<DeploymentAction> actions;
 
-            if (deployment == null || envs.containsKey(deployment.getEnv())) {
-                continue;
+            public Environment(String name, List<DeploymentAction> actions) {
+                this.name = name;
+                this.actions = actions;
             }
-            envs.put(deployment.getEnv(), deployment);
-        }
 
-        return envs;
+            public String getName() {
+                return name;
+            }
+
+            public List<DeploymentAction> getActions() {
+                return actions;
+            }
+
+            public DeploymentAction getCurrentAction() {
+                return actions.get(0);
+            }
+        }
     }
 
-    public List<Deployment.DeploymentAction> getDeployments(String environment, TopLevelItem item) {
-        System.out.println("Item2 class: " + item.getClass().toString());
-        if (!(item instanceof Job) && !(item instanceof WorkflowMultiBranchProject)) {
-            return new ArrayList<>();
-        }
-
+    private List<Unit.Environment> getEnvs(TopLevelItem item) {
         List<WorkflowRun> runs = Collections.emptyList();
         if (item instanceof WorkflowMultiBranchProject) {
             runs = ((WorkflowMultiBranchProject) item)
                     .getItems()
                     .stream()
-                    .peek(job -> System.out.println(": " + job.getDisplayName()))
                     .map(Job::getBuilds)
                     .flatMap(Collection::stream)
                     .collect(Collectors.toList());
@@ -86,22 +84,26 @@ public class DeploymentView extends ListView {
             runs = ((WorkflowJob) item).getBuilds();
         }
 
+        return runs
+                .stream()
+                .map(run -> run.getAction(DeploymentAction.class))
+                .filter(Objects::nonNull)
+                .collect(Collectors.groupingBy(DeploymentAction::getEnv))
+                .entrySet()
+                .stream()
+                .map(e -> new Unit.Environment(e.getKey(), e.getValue()))
+                .collect(Collectors.toList());
+    }
 
-        System.out.println("jobbbbb");
-
-        List<Deployment.DeploymentAction> deployments = new ArrayList<>();
-//        List<Run> runs = ((Job) item).getBuilds();
-
-        for (Run run : runs) {
-            Deployment.DeploymentAction deployment = run.getAction(Deployment.DeploymentAction.class);
-            if (deployment == null || !deployment.getEnv().equals(environment)) {
-                continue;
-            }
-
-            deployments.add(deployment);
-        }
-
-        return deployments;
+    public List<Unit> getUnits(List<? extends TopLevelItem> items) {
+        return items
+                .stream()
+                .map(item -> {
+                    List<Unit.Environment> envs = getEnvs(item);
+                    return new Unit(item, envs);
+                })
+                .filter(unit -> !unit.getEnvironments().isEmpty())
+                .collect(Collectors.toList());
     }
 
     @Extension
