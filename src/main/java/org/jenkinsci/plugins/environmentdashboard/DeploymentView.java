@@ -7,6 +7,8 @@ import hudson.model.ListView;
 import hudson.model.TopLevelItem;
 import hudson.model.ViewDescriptor;
 import hudson.util.FormValidation;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import net.sf.json.JSONObject;
 import org.jenkinsci.plugins.environmentdashboard.Deployment.DeploymentAction;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
@@ -29,46 +31,6 @@ public class DeploymentView extends ListView {
     @DataBoundConstructor
     public DeploymentView(String name) {
         super(name);
-    }
-
-    public static class Unit {
-        private final TopLevelItem job;
-        private final List<Environment> environments;
-
-        public TopLevelItem getJob() {
-            return job;
-        }
-
-        public List<Environment> getEnvironments() {
-            return environments;
-        }
-
-        public Unit(TopLevelItem job, List<Environment> environments) {
-            this.job = job;
-            this.environments = environments;
-        }
-
-        public static class Environment {
-            private final String name;
-            private final List<DeploymentAction> actions;
-
-            public Environment(String name, List<DeploymentAction> actions) {
-                this.name = name;
-                this.actions = actions;
-            }
-
-            public String getName() {
-                return name;
-            }
-
-            public List<DeploymentAction> getActions() {
-                return actions;
-            }
-
-            public DeploymentAction getCurrentAction() {
-                return actions.get(0);
-            }
-        }
     }
 
     private List<Unit.Environment> getEnvs(TopLevelItem item) {
@@ -98,12 +60,27 @@ public class DeploymentView extends ListView {
     public List<Unit> getUnits(List<? extends TopLevelItem> items) {
         return items
                 .stream()
-                .map(item -> {
-                    List<Unit.Environment> envs = getEnvs(item);
-                    return new Unit(item, envs);
-                })
+                .map(item -> new Unit(item, getEnvs(item)))
                 .filter(unit -> !unit.getEnvironments().isEmpty())
                 .collect(Collectors.toList());
+    }
+
+    @Getter
+    @RequiredArgsConstructor
+    public static class Unit {
+        private final TopLevelItem job;
+        private final List<Environment> environments;
+
+        @Getter
+        @RequiredArgsConstructor
+        public static class Environment {
+            private final String name;
+            private final List<DeploymentAction> actions;
+
+            public DeploymentAction getCurrentAction() {
+                return actions.get(0);
+            }
+        }
     }
 
     @Extension
