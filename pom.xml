@@ -3,7 +3,7 @@
 
     <groupId>io.jenkins.plugins</groupId>
     <artifactId>deploy-dashboard</artifactId>
-    <version>0.0.10-SNAPSHOT</version>
+    <version>0.1.0-SNAPSHOT</version>
     <packaging>hpi</packaging>
 
     <name>Deploy Dashboard Plugin by Namecheap</name>
