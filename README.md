@@ -12,7 +12,7 @@ This Jenkins plugin creates a custom view which can be used as a dashboard to di
 
 On the Jenkins main page or folder, click the + tab to start the new view wizard (If you
 do not see a +, it is likely you do not have permission to create a new view). 
-On the create new view page, give your view a name and select the Dashboard
+On the "create new view" page, give your view a name and select the Deployment View
 type and click ok.
 
 ![Create view](docs/images/create-view.png)
@@ -24,7 +24,7 @@ same process as the standard list view that comes with Jenkins.
 ![Configure view 1](docs/images/configure-view-01.png)
 
 Also a regular expression can be used to specify the jobs to include in
-the view. (e.g.: `.*` will select all the jobs int the folder)
+the view. (e.g.: `.*` will select all the jobs in the folder)
 
 ![Create new view 2](docs/images/configure-view-02.png)
 
@@ -41,7 +41,7 @@ You can click on the specific environment and get the release history
 ```groovy
 properties([parameters([
     string(name: 'version', description: 'App version to deploy'),
-    choice(name: 'env', choices: ['dev', 'prod'], description: 'Envirement where the app should be deployed')
+    choice(name: 'env', choices: ['dev', 'prod'], description: 'Environment where the app should be deployed')
 ])])
 
 node {
@@ -82,8 +82,3 @@ node {
 ## License
 
 This plugin is licensed under the Apache license 2.0, see [LICENSE](LICENSE).
-
-## TODO
-
-- Make the Deploy Dashboard work with Multibranch jobs
-
