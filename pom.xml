@@ -3,7 +3,7 @@
 
     <groupId>io.jenkins.plugins</groupId>
     <artifactId>deploy-dashboard</artifactId>
-    <version>0.0.10-SNAPSHOT</version>
+    <version>0.1.0-SNAPSHOT</version>
     <packaging>hpi</packaging>
 
     <name>Deploy Dashboard Plugin by Namecheap</name>
@@ -22,6 +22,20 @@
         <artifactId>plugin</artifactId>
         <version>3.57</version>
     </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.12</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins.workflow</groupId>
+            <artifactId>workflow-multibranch</artifactId>
+            <version>2.21</version>
+        </dependency>
+    </dependencies>
 
     <licenses>
         <license>

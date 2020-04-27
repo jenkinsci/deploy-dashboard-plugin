@@ -2,17 +2,30 @@ package org.jenkinsci.plugins.environmentdashboard;
 
 import hudson.Extension;
 import hudson.Util;
-import hudson.model.*;
+import hudson.model.Job;
+import hudson.model.ListView;
+import hudson.model.TopLevelItem;
+import hudson.model.ViewDescriptor;
 import hudson.util.FormValidation;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import net.sf.json.JSONObject;
+import org.jenkinsci.plugins.environmentdashboard.Deployment.DeploymentAction;
+import org.jenkinsci.plugins.workflow.job.WorkflowJob;
+import org.jenkinsci.plugins.workflow.job.WorkflowRun;
+import org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import java.util.stream.Collectors;
 
 public class DeploymentView extends ListView {
     @DataBoundConstructor
@@ -20,42 +33,54 @@ public class DeploymentView extends ListView {
         super(name);
     }
 
-    public Map<String, Deployment.DeploymentAction> getEnvironments(TopLevelItem item) {
-        if (!(item instanceof Job)) {
-            return new TreeMap<>();
-        }
-        List<Run> runs = ((Job) item).getBuilds();
-        Map<String, Deployment.DeploymentAction> envs = new TreeMap<>();
-        for (Run run : runs) {
-            Deployment.DeploymentAction deployment = run.getAction(Deployment.DeploymentAction.class);
-
-            if (deployment == null || envs.containsKey(deployment.getEnv())) {
-                continue;
-            }
-            envs.put(deployment.getEnv(), deployment);
+    private List<Unit.Environment> getEnvs(TopLevelItem item) {
+        List<WorkflowRun> runs = Collections.emptyList();
+        if (item instanceof WorkflowMultiBranchProject) {
+            runs = ((WorkflowMultiBranchProject) item)
+                    .getItems()
+                    .stream()
+                    .map(Job::getBuilds)
+                    .flatMap(Collection::stream)
+                    .collect(Collectors.toList());
+        } else if (item instanceof WorkflowJob) {
+            runs = ((WorkflowJob) item).getBuilds();
         }
 
-        return envs;
+        return runs
+                .stream()
+                .map(run -> run.getAction(DeploymentAction.class))
+                .filter(Objects::nonNull)
+                .collect(Collectors.groupingBy(DeploymentAction::getEnv))
+                .entrySet()
+                .stream()
+                .map(e -> new Unit.Environment(e.getKey(), e.getValue()))
+                .collect(Collectors.toList());
     }
 
-    public List<Deployment.DeploymentAction> getDeployments(String environment, TopLevelItem item) {
-        if (!(item instanceof Job)) {
-            return new ArrayList<>();
-        }
+    public List<Unit> getUnits(List<? extends TopLevelItem> items) {
+        return items
+                .stream()
+                .map(item -> new Unit(item, getEnvs(item)))
+                .filter(unit -> !unit.getEnvironments().isEmpty())
+                .collect(Collectors.toList());
+    }
 
-        List<Deployment.DeploymentAction> deployments = new ArrayList<>();
-        List<Run> runs = ((Job) item).getBuilds();
+    @Getter
+    @RequiredArgsConstructor
+    public static class Unit {
+        private final TopLevelItem job;
+        private final List<Environment> environments;
 
-        for (Run run : runs) {
-            Deployment.DeploymentAction deployment = run.getAction(Deployment.DeploymentAction.class);
-            if (deployment == null || !deployment.getEnv().equals(environment)) {
-                continue;
+        @Getter
+        @RequiredArgsConstructor
+        public static class Environment {
+            private final String name;
+            private final List<DeploymentAction> actions;
+
+            public DeploymentAction getCurrentAction() {
+                return actions.get(0);
             }
-
-            deployments.add(deployment);
         }
-
-        return deployments;
     }
 
     @Extension
