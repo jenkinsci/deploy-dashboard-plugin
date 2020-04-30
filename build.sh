@@ -1,2 +1,0 @@
-#!/usr/bin/env bash
-./mvnw --batch-mode --show-version --errors -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn --update-snapshots -Dmaven.test.failure.ignore clean install
