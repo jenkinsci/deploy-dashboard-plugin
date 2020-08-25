@@ -3,6 +3,7 @@ Thank you for your interest in making [Deploy Dashboard Plugin](https://github.c
 
 Plugin source code is hosted on [GitHub](https://github.com/jenkinsci/deploy-dashboard-plugin). New feature proposals and bug fix proposals should be submitted as [GitHub pull requests](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request). Your pull request will be evaluated by the [Jenkins job](https://jenkins.devops.namecheap.net/job/RND/job/jenkins-deploy-dashboard-plugin/).
 
+The [Developer Certificate of Origin](https://developercertificate.org/) is enabled for this repo. Please, read more before contribution: https://github.com/probot/dco
 
 ## Development
 
