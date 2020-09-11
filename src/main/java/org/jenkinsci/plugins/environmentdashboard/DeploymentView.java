@@ -48,7 +48,8 @@ public class DeploymentView extends ListView {
 
         return runs
                 .stream()
-                .map(run -> run.getAction(DeploymentAction.class))
+                .map(run -> run.getActions(DeploymentAction.class))
+                .flatMap(List::stream)
                 .filter(Objects::nonNull)
                 .collect(Collectors.groupingBy(DeploymentAction::getEnv))
                 .entrySet()
