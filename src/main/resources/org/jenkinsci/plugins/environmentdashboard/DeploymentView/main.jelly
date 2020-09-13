@@ -1,9 +1,9 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
-         xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt">
+         xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt" xmlns:dt="/data-tables">
 
     <link href="${rootURL}/plugin/${it.getClass().getPackage().getImplementationTitle()}/css/blink.css" type="text/css" rel="stylesheet"/>
-
+    <st:adjunct includes="io.jenkins.plugins.data-tables"/>
     <j:set var="views" value="${it.owner.views}"/>
     <j:set var="currentView" value="${it}"/>
     <j:choose>
@@ -15,77 +15,22 @@
         </j:when>
         <j:otherwise>
             <st:include page="viewTabs.jelly" it="${it.owner.viewsTabBar}"/>
-            <j:set var="units" value="${it.getUnits(it.items)}"/>
-            <div class="pane-frame">
-                <table id="projectstatus" class="pane bigtable stripped-odd">
-                    <tbody>
-                        <tr class="header">
-                            <th>
-                                <span style="margin-left: 1em">
-                                    Job
-                                </span>
-                            </th>
-                            <th>
-                                <span>
-                                    Environment
-                                </span>
-                            </th>
-                            <th>
-                                <span>
-                                    Release
-                                </span>
-                            </th>
-                            <th>
-                                <span>
-                                    Result
-                                </span>
-                            </th>
-                            <th>
-                                <span>
-                                    Completed
-                                </span>
-                            </th>
-                        </tr>
-                        <j:forEach var="unit" indexVar="i" items="${units}">
-                            <j:forEach var="environment" indexVar="j" items="${unit.getEnvironments()}">
-                                <tr id="job_build">
-                                    <td>
-                                        <j:if test="${j == 0}">
-                                            <a href="${unit.getJob().getAbsoluteUrl()}" style="margin-left: .5em">${unit.getJob().name}</a>
-                                        </j:if>
-                                    </td>
-                                    <td>
-                                        <a href="javascript:toggle('${i}_${j}');">
-                                            ${environment.getName()}
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="${environment.getCurrentAction().run.getAbsoluteUrl()}">
-                                            ${environment.getCurrentAction().buildNumber}
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <l:icon alt="${environment.getCurrentAction().run.description}"
-                                                class="${environment.getCurrentAction().run.buildStatusIconClassName} icon-lg"/>
-                                    </td>
-                                    <td>
-                                        ${environment.getCurrentAction().run.timestampString}
-                                    </td>
-                                </tr>
-                            </j:forEach>
-                        </j:forEach>
-                    </tbody>
-                </table>
-            </div>
-
+            <j:set var="tableModel" value="${it.getTableModel('projectstatus',it.items)}"/>
+            
+            <script src="${rootURL}/plugin/${it.getClass().getPackage().getImplementationTitle()}/js/dataTables.rowsGroup.js"></script>
+            <dt:table model="${tableModel}" onLoad="javascript:enableRowSpan();"/>
+            
+            <j:set var="units" value="${tableModel.getUnits(it.items)}"/>
             <j:forEach var="unit" indexVar="i" items="${units}">
                 <j:forEach var="environment" indexVar="j" items="${unit.getEnvironments()}">
-                    <div id="popup_${i}_${j}" class="modal">
+                    <div id="popup_${i}_${j}" class="modal" role="dialog">
                         <!-- Modal content -->
                         <div class="modal-content">
                             <div class="modal-header">
-                                <span class="close"></span>
-                                <h2>${unit.getJob().name} | ${environment.getName()}</h2>
+                                <h3 class="modal-title">${unit.getJob().name} | ${environment.getName()}</h3>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true"></span>
+                                </button>
                             </div>
                             <div class="modal-body">
                                 <div class="pane-frame">
@@ -111,16 +56,22 @@
                                             <j:forEach var="deployment" items="${environment.getActions()}">
                                                 <tr id="job_build">
                                                     <td>
+                                                        ${deployment.buildNumber}
+                                                        [<a href="${deployment.run.getAbsoluteUrl()}/changes">
+                                                            changes
+                                                        </a>]
+                                                    </td>
+                                                    <td>
                                                         <a href="${deployment.run.getAbsoluteUrl()}">
-                                                            ${deployment.buildNumber}
-                                                        </a>
-                                                    </td>
-                                                    <td>
-                                                        <l:icon alt="${deployment.run.description}"
+                                                            <l:icon alt="${deployment.run.description}"
                                                                 class="${deployment.run.buildStatusIconClassName} icon-lg"/>
+                                                        </a>
+                                                        [<a href="${deployment.run.getAbsoluteUrl()}/console">
+                                                            console log
+                                                        </a>]
                                                     </td>
                                                     <td>
-                                                        ${deployment.run.timestampString}
+                                                        ${deployment.run.timestampString} ago
                                                     </td>
                                                 </tr>
                                             </j:forEach>
@@ -132,8 +83,7 @@
                     </div>
                 </j:forEach>
             </j:forEach>
-
-
+            
             <script language="javascript">
                 function toggle(id) {
                     var modal = document.getElementById('popup_' + id);
@@ -151,11 +101,11 @@
                             close()
                         }
                     }
-
                     window.addEventListener('click', windowClose);
                     span.addEventListener('click', close);
                 }
             </script>
+            
         </j:otherwise>
     </j:choose>
 </j:jelly>
