@@ -8,19 +8,36 @@ import hudson.tasks.*;
 import jenkins.tasks.SimpleBuildStep;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Arrays;
 
 public class BuildAddUrl extends Builder implements SimpleBuildStep {
 
     private final String title;
     private final String url;
-
+    private String users;
+    private String groups;
+    
     @DataBoundConstructor
     public BuildAddUrl(String title, String url) {
         this.url = url;
         this.title = title;
+    }
+    
+    @DataBoundSetter
+    public void setUsers(String users) {
+        this.users = users;
+    }
+
+    @DataBoundSetter
+    public void setGroups(String groups) {
+        this.groups = groups;
     }
 
     public String getTitle() {
@@ -29,6 +46,14 @@ public class BuildAddUrl extends Builder implements SimpleBuildStep {
 
     public String getUrl() {
         return url;
+    }
+
+    public String getUsers() {
+        return users;
+    }
+
+    public String getGroups() {
+        return groups;
     }
 
     @Override
@@ -43,7 +68,7 @@ public class BuildAddUrl extends Builder implements SimpleBuildStep {
             @Nonnull Launcher launcher,
             @Nonnull TaskListener listener
     ) throws InterruptedException, IOException {
-        run.addAction(new BuildUrlAction(title, url));
+        run.addAction(new BuildUrlAction(title, url, users, groups));
     }
 
     @Extension
@@ -64,15 +89,49 @@ public class BuildAddUrl extends Builder implements SimpleBuildStep {
     public static class BuildUrlAction implements Action {
         private final String title;
         private final String url;
+        private final ArrayList<String> userList = new ArrayList<String>();
+        private final ArrayList<String> groupList = new ArrayList<String>();
 
-        BuildUrlAction(String title, String url) {
+        BuildUrlAction(String title, String url, String users, String groups) {
             this.title = title;
             this.url = url;
+            if (users != null && !"".equals(users)) {
+                this.userList.addAll(Arrays.asList(users.split(",")));
+            } 
+            if (groups != null && !"".equals(groups)) {
+                this.groupList.addAll(Arrays.asList(groups.split(",")));
+            }
         }
 
         @Override
         public String getIconFileName() {
-            return String.format("/plugin/%s/deploy.png", getClass().getPackage().getImplementationTitle());
+            String iconFileName = String.format("/plugin/%s/deploy.png", getClass().getPackage().getImplementationTitle());
+
+            User currentUser = User.current();
+            if (currentUser == null) return null;
+
+            String currentUserId = currentUser.getId();
+            List<String> currentUserGroups = currentUser.getAuthorities();
+
+            if (!checkPermissions() || isUserInList(currentUserId) || isUserInGroup(currentUserGroups)) 
+                return iconFileName;
+
+            return null;
+        }
+
+        private boolean checkPermissions() {
+            return userList.size() > 0 || groupList.size() > 0;
+        }
+
+        private boolean isUserInList(String userId) {
+            return userList.contains(userId);
+        }
+
+        private boolean isUserInGroup(List<String> userGroups) {
+            for(String userGroup: userGroups) 
+                if (groupList.contains(userGroup))
+                    return true;
+            return false;
         }
 
         @Override
