@@ -18,7 +18,7 @@
             <j:set var="units" value="${it.getUnits(it.items)}"/>
             <div class="pane-frame">
                 <table id="projectstatus" class="pane bigtable stripped-odd">
-                    <tbody>
+                    <thead>
                         <tr class="header">
                             <th>
                                 <span style="margin-left: 1em">
@@ -46,35 +46,49 @@
                                 </span>
                             </th>
                         </tr>
-                        <j:forEach var="unit" indexVar="i" items="${units}">
+                    </thead>
+                    <j:forEach var="unit" indexVar="i" items="${units}">
+                        <tbody class="apps">
+                            <tr id="job_build">
+                                <td colspan="4">
+                                   <a href="${unit.getJob().getAbsoluteUrl()}" style="margin-left: .5em">${unit.getJob().name}</a>
+                                </td>
+                                <td colspan="1">
+                                    <div class="toggle">
+                                      <button>
+                                        <span>Details</span>
+                                        <img src="/plugin/deploy-dashboard/chevron.svg" />
+                                      </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tbody class="hideRows">
                             <j:forEach var="environment" indexVar="j" items="${unit.getEnvironments()}">
-                                <tr id="job_build">
-                                    <td>
-                                        <j:if test="${j == 0}">
-                                            <a href="${unit.getJob().getAbsoluteUrl()}" style="margin-left: .5em">${unit.getJob().name}</a>
-                                        </j:if>
-                                    </td>
-                                    <td>
-                                        <a href="javascript:toggle('${i}_${j}');">
-                                            ${environment.getName()}
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="${environment.getCurrentAction().run.getAbsoluteUrl()}">
-                                            ${environment.getCurrentAction().buildNumber}
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <l:icon alt="${environment.getCurrentAction().run.description}"
-                                                class="${environment.getCurrentAction().run.buildStatusIconClassName} icon-lg"/>
-                                    </td>
-                                    <td>
-                                        ${environment.getCurrentAction().run.timestampString}
-                                    </td>
-                                </tr>
+                                    <tr id="job_build">
+                                        <td>
+                                        </td>
+                                        <td>
+                                            <a href="javascript:toggle('${i}_${j}');">
+                                                ${environment.getName()}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href="${environment.getCurrentAction().run.getAbsoluteUrl()}">
+                                                ${environment.getCurrentAction().buildNumber}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <l:icon alt="${environment.getCurrentAction().run.description}"
+                                                    class="${environment.getCurrentAction().run.buildStatusIconClassName} icon-lg"/>
+                                        </td>
+                                        <td>
+                                            ${environment.getCurrentAction().run.timestampString}
+                                        </td>
+                                    </tr>
                             </j:forEach>
-                        </j:forEach>
-                    </tbody>
+                        </tbody>
+                    </j:forEach>
                 </table>
             </div>
 
@@ -155,6 +169,17 @@
                     window.addEventListener('click', windowClose);
                     span.addEventListener('click', close);
                 }
+
+                const apps = document.querySelectorAll(".toggle button");
+
+                apps.forEach((apps) =>
+                  apps.addEventListener("click", (event) => {
+                    event.currentTarget
+                      .closest(".apps")
+                      .nextElementSibling.classList.toggle("hideRows");
+                    event.currentTarget.querySelector(".toggle img").classList.toggle("expand");
+                  })
+                );
             </script>
         </j:otherwise>
     </j:choose>

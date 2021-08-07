@@ -87,3 +87,31 @@
 .modal-body tbody tr:first-child th:first-child {
     padding: .7em !important;
 }
+
+.hideRows {
+    display: none;
+}
+
+.toggle {
+    float: right !important;
+}
+
+.toggle button {
+    border: 0;
+    padding: 0 !important;
+    background-color: transparent;
+}
+
+.toggle img {
+    height: 20px;
+    vertical-align: middle;
+    transition: transform 0.2s, -webkit-transform 0.2s;
+}
+
+.toggle img.expand {
+    transform: rotate(180deg);
+}
+
+.toggle span {
+    vertical-align: middle !important;
+}
