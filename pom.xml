@@ -13,27 +13,27 @@
     <url>https://github.com/jenkinsci/deploy-dashboard-plugin</url>
 
     <properties>
-        <java.level>8</java.level>
-        <findbugs.skip>true</findbugs.skip>
+        <jenkins.version>2.479</jenkins.version>
     </properties>
 
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>3.57</version>
+        <version>5.2102.v5f5fe09fccf1</version>
+        <relativePath />
     </parent>
 
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.12</version>
+            <version>1.18.34</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jenkins-ci.plugins.workflow</groupId>
             <artifactId>workflow-multibranch</artifactId>
-            <version>2.21</version>
+            <version>795.ve0cb_1f45ca_9a_</version>
         </dependency>
         <dependency>
             <groupId>io.jenkins.plugins</groupId>
