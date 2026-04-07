@@ -72,7 +72,7 @@ public class BuildAddUrl extends Builder implements SimpleBuildStep {
 
         @Override
         public String getIconFileName() {
-            return String.format("/plugin/%s/deploy.png", getClass().getPackage().getImplementationTitle());
+            return String.format("/plugin/%s/deploy.svg", getClass().getPackage().getImplementationTitle());
         }
 
         @Override

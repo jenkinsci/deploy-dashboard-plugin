@@ -8,18 +8,18 @@
     width: 100%; /* Full width */
     height: 100%; /* Full height */
     overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0, 0, 0); /* Fallback color */
-    background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+    background-color: rgba(0, 0, 0, 0.4);
     z-index: 999;
 }
 
 /* Modal Content */
 .modal-content {
     position: relative;
-    background-color: #fefefe;
+    background-color: var(--background, #fefefe);
+    color: var(--text-color, #333);
     margin: auto;
     padding: 0;
-    border: 1px solid #888;
+    border: 1px solid var(--medium-grey, #888);
     width: 80%;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     -webkit-animation-name: animatetop;
@@ -65,19 +65,21 @@
 
 .close:hover,
 .close:focus {
-    color: #727272;
+    color: #ccc;
     text-decoration: none;
     cursor: pointer;
 }
 
 .modal-header {
     padding: 2px 16px;
-    background-color: #000000;
-    color: white;
+    background-color: var(--dark-grey, #000000);
+    color: var(--text-color-secondary, white);
 }
 
 .modal-body {
     padding: 1em;
+    background-color: var(--background, #fefefe);
+    color: var(--text-color, #333);
 }
 
 .modal-body tbody td:first-child {
