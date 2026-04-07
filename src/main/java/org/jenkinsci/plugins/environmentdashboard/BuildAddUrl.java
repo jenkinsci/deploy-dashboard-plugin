@@ -72,7 +72,7 @@ public class BuildAddUrl extends Builder implements SimpleBuildStep {
 
         @Override
         public String getIconFileName() {
-            return String.format("/plugin/%s/deploy.svg", getClass().getPackage().getImplementationTitle());
+            return "symbol-rocket-outline plugin-ionicons-api";
         }
 
         @Override
