@@ -2,7 +2,8 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
          xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt">
 
-    <link href="${rootURL}/plugin/${it.getClass().getPackage().getImplementationTitle()}/css/blink.css" type="text/css" rel="stylesheet"/>
+    <link href="${rootURL}/plugin/deploy-dashboard/css/blink.css" type="text/css" rel="stylesheet"/>
+    <st:adjunct includes="org.jenkinsci.plugins.environmentdashboard.DeploymentView.dashboard"/>
 
     <j:set var="views" value="${it.owner.views}"/>
     <j:set var="currentView" value="${it}"/>
@@ -55,7 +56,7 @@
                                         </j:if>
                                     </td>
                                     <td>
-                                        <a href="javascript:toggle('${i}_${j}');">
+                                        <a href="#" class="edb-popup-toggle" data-popup-id="popup_${i}_${j}">
                                             ${environment.getName()}
                                         </a>
                                     </td>
@@ -133,29 +134,6 @@
                 </j:forEach>
             </j:forEach>
 
-
-            <script language="javascript">
-                function toggle(id) {
-                    var modal = document.getElementById('popup_' + id);
-                    var span = modal.querySelector('.close');
-                    modal.style.display = 'block';
-
-                    function close() {
-                        modal.style.display = 'none';
-                        span.removeEventListener('click', close);
-                        window.removeEventListener('click', windowClose);
-                    }
-
-                    function windowClose(event) {
-                        if (event.target === modal) {
-                            close()
-                        }
-                    }
-
-                    window.addEventListener('click', windowClose);
-                    span.addEventListener('click', close);
-                }
-            </script>
         </j:otherwise>
     </j:choose>
 </j:jelly>

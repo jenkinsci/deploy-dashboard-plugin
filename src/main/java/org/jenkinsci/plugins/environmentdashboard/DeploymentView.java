@@ -1,5 +1,6 @@
 package org.jenkinsci.plugins.environmentdashboard;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.Util;
 import hudson.model.Job;
@@ -7,18 +8,6 @@ import hudson.model.ListView;
 import hudson.model.TopLevelItem;
 import hudson.model.ViewDescriptor;
 import hudson.util.FormValidation;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import net.sf.json.JSONObject;
-import org.jenkinsci.plugins.environmentdashboard.Deployment.DeploymentAction;
-import org.jenkinsci.plugins.workflow.job.WorkflowJob;
-import org.jenkinsci.plugins.workflow.job.WorkflowRun;
-import org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject;
-import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.QueryParameter;
-import org.kohsuke.stapler.StaplerRequest;
-
-import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -26,6 +15,14 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
+import net.sf.json.JSONObject;
+import org.jenkinsci.plugins.environmentdashboard.Deployment.DeploymentAction;
+import org.jenkinsci.plugins.workflow.job.WorkflowJob;
+import org.jenkinsci.plugins.workflow.job.WorkflowRun;
+import org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject;
+import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.StaplerRequest2;
 
 public class DeploymentView extends ListView {
     @DataBoundConstructor
@@ -65,17 +62,39 @@ public class DeploymentView extends ListView {
                 .collect(Collectors.toList());
     }
 
-    @Getter
-    @RequiredArgsConstructor
     public static class Unit {
         private final TopLevelItem job;
         private final List<Environment> environments;
 
-        @Getter
-        @RequiredArgsConstructor
+        public Unit(TopLevelItem job, List<Environment> environments) {
+            this.job = job;
+            this.environments = environments;
+        }
+
+        public TopLevelItem getJob() {
+            return job;
+        }
+
+        public List<Environment> getEnvironments() {
+            return environments;
+        }
+
         public static class Environment {
             private final String name;
             private final List<DeploymentAction> actions;
+
+            public Environment(String name, List<DeploymentAction> actions) {
+                this.name = name;
+                this.actions = actions;
+            }
+
+            public String getName() {
+                return name;
+            }
+
+            public List<DeploymentAction> getActions() {
+                return actions;
+            }
 
             public DeploymentAction getCurrentAction() {
                 return actions.get(0);
@@ -91,7 +110,7 @@ public class DeploymentView extends ListView {
         }
 
         @Override
-        @Nonnull
+        @NonNull
         public String getDisplayName() {
             return "Deployment View";
         }
@@ -110,7 +129,7 @@ public class DeploymentView extends ListView {
         }
 
         @Override
-        public boolean configure(StaplerRequest req, JSONObject json) throws FormException {
+        public boolean configure(StaplerRequest2 req, JSONObject json) throws FormException {
             save();
 
             return true;

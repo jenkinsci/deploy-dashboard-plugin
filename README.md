@@ -78,6 +78,19 @@ node {
 
 ![Sidebar](docs/images/deploy-action.png)
 
+#### Notes on modern Jenkins (plugin 0.2.0+)
+
+Since 0.2.0 the button no longer exposes the raw target URL as the action URL.
+Each button is served under a stable path on the build
+(`.../<build>/deploy-link-<hash>`) that answers with an HTTP redirect to the
+configured URL, so query strings (e.g. `parambuild` links with prefilled
+parameters) always reach the browser intact regardless of how the UI renders
+the link. Only root-relative paths and `http(s)` URLs are allowed as targets.
+
+On the redesigned build pages (Jenkins 2.5xx new build page, Pipeline Graph
+View pages) — which no longer render the classic left sidebar — the buttons
+additionally appear in the build details bar next to the build title.
+
 
 ## License
 
