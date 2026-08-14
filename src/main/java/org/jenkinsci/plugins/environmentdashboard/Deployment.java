@@ -1,18 +1,20 @@
 package org.jenkinsci.plugins.environmentdashboard;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
+import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
-import hudson.model.*;
+import hudson.model.AbstractProject;
+import hudson.model.Run;
+import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
+import java.io.IOException;
 import jenkins.model.RunAction2;
 import jenkins.tasks.SimpleBuildStep;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
-
-import javax.annotation.Nonnull;
-import java.io.IOException;
 
 public class Deployment extends Builder implements SimpleBuildStep {
 
@@ -35,10 +37,11 @@ public class Deployment extends Builder implements SimpleBuildStep {
 
     @Override
     public void perform(
-            @Nonnull Run<?, ?> run,
-            @Nonnull FilePath workspace,
-            @Nonnull Launcher launcher,
-            @Nonnull TaskListener listener
+            @NonNull Run<?, ?> run,
+            @NonNull FilePath workspace,
+            @NonNull EnvVars environment,
+            @NonNull Launcher launcher,
+            @NonNull TaskListener listener
     ) throws InterruptedException, IOException {
         run.addAction(new DeploymentAction(
                 env,
@@ -50,7 +53,7 @@ public class Deployment extends Builder implements SimpleBuildStep {
     @Symbol("addDeployToDashboard")
     public static class DescriptorImpl extends BuildStepDescriptor<Builder> {
         @Override
-        @Nonnull
+        @NonNull
         public String getDisplayName() {
             return "Deployment";
         }
