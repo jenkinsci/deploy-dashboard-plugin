@@ -4,6 +4,24 @@ node() {
         checkout scm
     }
 
+    stage('Prepare JDK 21') {
+        // The plugin baseline requires Java 21 (maven-hpi-plugin fails to load
+        // on older JDKs with "Unknown packaging: hpi"); provision a JDK into
+        // the workspace when the agent's default java is older.
+        def hasJava21 = sh(script: 'java -version 2>&1 | grep -qE \'version "(2[1-9]|[3-9][0-9])\'', returnStatus: true) == 0
+        if (!hasJava21) {
+            sh '''
+                curl -sSL https://api.adoptium.net/v3/binary/latest/21/ga/linux/x64/jdk/hotspot/normal/eclipse -o /tmp/jdk21.tar.gz
+                rm -rf "$WORKSPACE/.jdk21" && mkdir -p "$WORKSPACE/.jdk21"
+                tar xzf /tmp/jdk21.tar.gz -C "$WORKSPACE/.jdk21" --strip-components=1
+                rm -f /tmp/jdk21.tar.gz
+            '''
+            env.JAVA_HOME = "${env.WORKSPACE}/.jdk21"
+            env.PATH = "${env.WORKSPACE}/.jdk21/bin:${env.PATH}"
+        }
+        sh 'java -version'
+    }
+
     stage('Release') {
         withCredentials([usernamePassword(credentialsId: "user-nc-jenkins.io", usernameVariable: 'RELEASE_USERNAME', passwordVariable: 'RELEASE_PASSWORD')]) {
             sshagent(["ssh-nc-github"]) {
