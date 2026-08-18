@@ -18,6 +18,11 @@ node() {
             '''
             env.JAVA_HOME = "${env.WORKSPACE}/.jdk21"
             env.PATH = "${env.WORKSPACE}/.jdk21/bin:${env.PATH}"
+        } else {
+            // mvnw prefers JAVA_HOME over the PATH java; if the agent exports
+            // a JAVA_HOME pointing at an older JDK, Maven would silently run
+            // on it. Pin JAVA_HOME to the JDK we just validated.
+            env.JAVA_HOME = sh(script: 'java -XshowSettings:properties -version 2>&1 | sed -n "s/^ *java.home = //p"', returnStdout: true).trim()
         }
         sh 'java -version'
     }
@@ -25,7 +30,7 @@ node() {
     stage('Release') {
         withCredentials([usernamePassword(credentialsId: "user-nc-jenkins.io", usernameVariable: 'RELEASE_USERNAME', passwordVariable: 'RELEASE_PASSWORD')]) {
             sshagent(["ssh-nc-github"]) {
-                sh "./mvnw --settings release-settings.xml -Drepo.login=${env.RELEASE_USERNAME} -Drepo.pwd=${env.RELEASE_PASSWORD} release:prepare release:perform"
+                sh "./mvnw --show-version --settings release-settings.xml -Drepo.login=${env.RELEASE_USERNAME} -Drepo.pwd=${env.RELEASE_PASSWORD} release:prepare release:perform"
             }
         }
     }
