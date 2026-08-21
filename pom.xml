@@ -3,7 +3,7 @@
 
     <groupId>io.jenkins.plugins</groupId>
     <artifactId>deploy-dashboard</artifactId>
-    <version>0.2.1</version>
+    <version>0.2.2-SNAPSHOT</version>
     <packaging>hpi</packaging>
 
     <name>Deploy Dashboard Plugin by Namecheap</name>
@@ -74,7 +74,7 @@
         <connection>scm:git:https://github.com/jenkinsci/deploy-dashboard-plugin.git</connection>
         <developerConnection>scm:git:git@github.com:jenkinsci/deploy-dashboard-plugin.git</developerConnection>
         <url>https://github.com/jenkinsci/deploy-dashboard-plugin</url>
-        <tag>deploy-dashboard-0.2.1</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <developers>
